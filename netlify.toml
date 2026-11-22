@@ -1,8 +1,0 @@
-[build]
-publish = "public"
-
-[[headers]]
-  for = "/*.svg"
-  [headers.values]
-    Content-Type = "image/svg+xml"
-    Cache-Control = "public, max-age=300"
