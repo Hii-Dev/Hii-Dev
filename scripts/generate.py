@@ -1,6 +1,6 @@
 """Generate the SVG cards (light / dark) for the GitHub profile README.
 
-Outputs: hero-*.svg, activity-*.svg, languages-*.svg
+Outputs: hero-*.svg, link-*.svg, about-*.svg, activity-*.svg, languages-*.svg
 
 Usage:
     PROFILE_GH_TOKEN=... python scripts/generate.py [OUT_DIR]
@@ -8,6 +8,7 @@ Usage:
 """
 
 import json
+from html import escape
 import os
 import random
 import sys
@@ -137,8 +138,9 @@ def weekly(days: dict[date, int], today: date, weeks: int = 52) -> list[tuple[da
 
 # ================================================================ render helpers
 
-def svg(height: int, label: str, body: str, c: dict, extra_css: str = "") -> str:
-    return f"""<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{height}" viewBox="0 0 {W} {height}" role="img" aria-label="{label}">
+def svg(height: int, label: str, body: str, c: dict, extra_css: str = "", width: int = W) -> str:
+    label = escape(label)
+    return f"""<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}" role="img" aria-label="{label}">
 <title>{label}</title>
 <defs>
   <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
@@ -155,17 +157,17 @@ def svg(height: int, label: str, body: str, c: dict, extra_css: str = "") -> str
   {extra_css}
   @media (prefers-reduced-motion: reduce) {{ * {{ animation: none !important; }} }}
 </style>
-<rect x="0.5" y="0.5" width="{W - 1}" height="{height - 1}" rx="14" fill="{c["bg"]}" stroke="{c["border"]}"/>
+<rect x="0.5" y="0.5" width="{width - 1}" height="{height - 1}" rx="14" fill="{c["bg"]}" stroke="{c["border"]}"/>
 {body}
 </svg>
 """
 
 
-def header(title: str, note: str) -> str:
+def header(title: str, note: str = "", x: float = PAD) -> str:
+    note_el = f'<text x="{W - PAD}" y="44" class="muted small" text-anchor="end">{note}</text>' if note else ""
     return (
-        f'<rect x="{PAD}" y="31" width="4" height="16" rx="2" fill="url(#accent)"/>'
-        f'<text x="{PAD + 12}" y="44" class="heading">{title}</text>'
-        f'<text x="{W - PAD}" y="44" class="muted small" text-anchor="end">{note}</text>'
+        f'<rect x="{x}" y="31" width="4" height="16" rx="2" fill="url(#accent)"/>'
+        f'<text x="{x + 12}" y="44" class="heading">{title}</text>{note_el}'
     )
 
 
@@ -187,9 +189,9 @@ def render_hero(c: dict) -> str:
     h = 220
     code = [
         [("kw", "const "), ("fg", "hii"), ("muted", " = {")],
-        [("prop", "  role"), ("muted", ": "), ("str", '"Web Developer"'), ("muted", ",")],
-        [("prop", "  base"), ("muted", ": "), ("str", '"Ehime, Japan"'), ("muted", ",")],
-        [("prop", "  stack"), ("muted", ": ["), ("str", '"Next.js"'), ("muted", ", "), ("str", '"FastAPI"'), ("muted", "],")],
+        [("prop", "  role"), ("muted", ": "), ("str", '"Programmer"'), ("muted", ",")],
+        [("prop", "  base"), ("muted", ": "), ("str", '"Chiba, Japan"'), ("muted", ",")],
+        [("prop", "  stack"), ("muted", ": ["), ("str", '"React"'), ("muted", ", "), ("str", '"FastAPI"'), ("muted", "],")],
         [("prop", "  loves"), ("muted", ": ["), ("str", '"beer"'), ("muted", ", "), ("str", '"books"'), ("muted", "],")],
         [("muted", "};")],
     ]
@@ -218,7 +220,7 @@ def render_hero(c: dict) -> str:
 </g>
 <text x="{PAD + 8}" y="84" class="muted fade" style="font-size:15px">Hi there, I'm</text>
 <text x="{PAD + 4}" y="136" class="name fade" style="animation-delay:.1s">Hii</text>
-<text x="{PAD + 8}" y="170" class="muted fade" style="font-size:15px;animation-delay:.2s">Web Developer — Ehime, Japan</text>
+<text x="{PAD + 8}" y="170" class="muted fade" style="font-size:15px;animation-delay:.2s">Programmer — Chiba, Japan</text>
 <rect x="{cx}" y="{cy}" width="{cw}" height="{ch}" rx="10" fill="{c["tile"]}" stroke="{c["border"]}" opacity=".96"/>
 {dots}
 {lines}
@@ -229,7 +231,68 @@ def render_hero(c: dict) -> str:
   .code {{ font-family: {MONO}; font-size: 12.5px; white-space: pre; }}
   .cursor {{ animation: blink 1.1s steps(1) infinite; }}
   @keyframes blink {{ 50% {{ opacity: 0; }} }}"""
-    return svg(h, "Hi there, I'm Hii — Web Developer based in Ehime, Japan", body, c, css)
+    return svg(h, "Hi there, I'm Hii — Programmer based in Chiba, Japan", body, c, css)
+
+
+ABOUT = [
+    ("Programmer", "Based in Chiba, Japan"),
+    ("Kawahara Computer Business College", "Sanno University · Class of 2026"),
+    ("Building web apps", "React · FastAPI"),
+    ("Beer & books", "Off the keyboard"),
+]
+
+STACK = [
+    ("Frontend", [("TypeScript", "#3178c6"), ("React", "#61dafb"), ("Next.js", None), ("Tailwind CSS", "#38bdf8")]),
+    ("Backend", [("Python", "#3572A5"), ("FastAPI", "#009688")]),
+]
+
+
+def render_about(c: dict) -> str:
+    h = 286
+    mid = 432
+
+    rows = ""
+    for i, (title, sub) in enumerate(ABOUT):
+        y = 70 + i * 50
+        rows += (
+            f'<g class="fade" style="animation-delay:{i * 0.08:.2f}s">'
+            f'<text x="{PAD}" y="{y + 16}" style="font-size:14px;font-weight:500">{escape(title)}</text>'
+            f'<text x="{PAD}" y="{y + 34}" class="muted">{escape(sub)}</text>'
+            "</g>"
+        )
+
+    chips, y, x0, x1, n = "", 62, mid + 24, W - PAD, 0
+    for group, items in STACK:
+        y += 22
+        chips += f'<text x="{x0}" y="{y}" class="muted small caps">{group}</text>'
+        x, y = x0, y + 12
+        for name, color in items:
+            w = len(name) * 7.4 + 42
+            if x + w > x1:
+                x, y = x0, y + 40
+            chips += (
+                f'<g class="fade" style="animation-delay:{0.15 + n * 0.06:.2f}s">'
+                f'<rect x="{x:.1f}" y="{y}" width="{w:.1f}" height="30" rx="15" fill="{c["tile"]}" stroke="{c["grid"]}"/>'
+                f'<circle cx="{x + 17:.1f}" cy="{y + 15}" r="4.5" fill="{color or c["fg"]}"/>'
+                f'<text x="{x + 29:.1f}" y="{y + 19.5}" style="font-size:13px">{name}</text>'
+                "</g>"
+            )
+            x += w + 8
+            n += 1
+        y += 50
+
+    body = f"""
+{header("About")}
+{rows}
+<line x1="{mid}" y1="32" x2="{mid}" y2="{h - 32}" stroke="{c["grid"]}"/>
+{header("Stack", x=mid + 24)}
+{chips}
+"""
+    css = ".caps { text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }"
+    label = "About: " + "; ".join(f"{t} ({s})" for t, s in ABOUT) + ". Stack: " + ", ".join(
+        n for _, items in STACK for n, _ in items
+    )
+    return svg(h, label, body, c, css)
 
 
 def render_activity(days: dict[date, int], today: date, c: dict) -> str:
@@ -360,6 +423,25 @@ def render_languages(langs: list[dict], c: dict) -> str:
     return svg(h, label, body, c, css)
 
 
+LINKS = [
+    ("portfolio", "Portfolio", "hii-dev.vercel.app"),
+    ("zenn", "Zenn", "zenn.dev/aputech"),
+    ("note", "note", "note.com/h1idev"),
+    ("x", "X", "@h1idev"),
+]
+
+
+def render_link(title: str, sub: str, c: dict) -> str:
+    w, h = 196, 56
+    body = (
+        f'<text x="18" y="25" style="font-size:14px;font-weight:600">{escape(title)}</text>'
+        f'<text x="18" y="42" class="muted small">{escape(sub)}</text>'
+        f'<path d="M{w - 27} 27 {w - 19} 19M{w - 25} 19h6v6" fill="none" stroke="url(#accent)" '
+        'stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>'
+    )
+    return svg(h, f"{title} — {sub}", body, c, width=w)
+
+
 # ================================================================ main
 
 def main() -> None:
@@ -372,9 +454,12 @@ def main() -> None:
     out.mkdir(parents=True, exist_ok=True)
     for name, c in THEMES.items():
         (out / f"hero-{name}.svg").write_text(render_hero(c), encoding="utf-8")
+        for slug, title, sub in LINKS:
+            (out / f"link-{slug}-{name}.svg").write_text(render_link(title, sub, c), encoding="utf-8")
+        (out / f"about-{name}.svg").write_text(render_about(c), encoding="utf-8")
         (out / f"activity-{name}.svg").write_text(render_activity(days, today, c), encoding="utf-8")
         (out / f"languages-{name}.svg").write_text(render_languages(langs, c), encoding="utf-8")
-    print(f"Wrote hero / activity / languages cards to {out}")
+    print(f"Wrote hero / links / about / activity / languages cards to {out}")
 
 
 if __name__ == "__main__":
