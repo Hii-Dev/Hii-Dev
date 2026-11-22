@@ -1,6 +1,6 @@
 """Generate the SVG cards (light / dark) for the GitHub profile README.
 
-Outputs: hero-*.svg, link-*.svg, about-*.svg, activity-*.svg, languages-*.svg
+Outputs: hero-*.svg, link-*.svg, about-*.svg, stack-*.svg, activity-*.svg, languages-*.svg
 
 Usage:
     PROFILE_GH_TOKEN=... python scripts/generate.py [OUT_DIR]
@@ -138,7 +138,7 @@ def weekly(days: dict[date, int], today: date, weeks: int = 52) -> list[tuple[da
 
 # ================================================================ render helpers
 
-def svg(height: int, label: str, body: str, c: dict, extra_css: str = "", width: int = W) -> str:
+def svg(height: int, label: str, body: str, c: dict, extra_css: str = "", width: int = W, inset: float = 0) -> str:
     label = escape(label)
     return f"""<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}" role="img" aria-label="{label}">
 <title>{label}</title>
@@ -157,7 +157,7 @@ def svg(height: int, label: str, body: str, c: dict, extra_css: str = "", width:
   {extra_css}
   @media (prefers-reduced-motion: reduce) {{ * {{ animation: none !important; }} }}
 </style>
-<rect x="0.5" y="0.5" width="{width - 1}" height="{height - 1}" rx="14" fill="{c["bg"]}" stroke="{c["border"]}"/>
+<rect x="{inset + 0.5}" y="0.5" width="{width - 1 - 2 * inset}" height="{height - 1}" rx="14" fill="{c["bg"]}" stroke="{c["border"]}"/>
 {body}
 </svg>
 """
@@ -236,61 +236,78 @@ def render_hero(c: dict) -> str:
 
 ABOUT = [
     ("Programmer", "Based in Chiba, Japan"),
-    ("Kawahara Computer Business College", "Sanno University · Class of 2026"),
     ("Building web apps", "React · FastAPI"),
     ("Beer & books", "Off the keyboard"),
 ]
 
-STACK = [
+EDUCATION = [
+    ("Kawahara Computer Business College", "Graduated 2026"),
+    ("Sanno University", "Graduated 2026"),
+]
+
+STACK = [  # (group, [(name, dot color or None for fg, optional note)])
     ("Frontend", [("TypeScript", "#3178c6"), ("React", "#61dafb"), ("Next.js", None), ("Tailwind CSS", "#38bdf8")]),
-    ("Backend", [("Python", "#3572A5"), ("FastAPI", "#009688")]),
+    ("Backend", [("Python", "#3572A5"), ("FastAPI", "#009688"), ("Java", "#b07219"), ("Spring Boot", "#6db33f")]),
+    ("AI", [("Claude", "#d97757", "Claude Code"), ("ChatGPT", "#10a37f", "Codex")]),
+    ("Other", [("Power Automate", "#0066ff")]),
 ]
 
 
 def render_about(c: dict) -> str:
-    h = 286
     mid = 432
+    h = 70 + 50 * max(len(ABOUT), len(EDUCATION)) + 18
 
-    rows = ""
-    for i, (title, sub) in enumerate(ABOUT):
-        y = 70 + i * 50
-        rows += (
-            f'<g class="fade" style="animation-delay:{i * 0.08:.2f}s">'
-            f'<text x="{PAD}" y="{y + 16}" style="font-size:14px;font-weight:500">{escape(title)}</text>'
-            f'<text x="{PAD}" y="{y + 34}" class="muted">{escape(sub)}</text>'
+    def rows(items, x, delay):
+        return "".join(
+            f'<g class="fade" style="animation-delay:{delay + i * 0.08:.2f}s">'
+            f'<text x="{x}" y="{70 + i * 50 + 16}" style="font-size:14px;font-weight:500">{escape(title)}</text>'
+            f'<text x="{x}" y="{70 + i * 50 + 34}" class="muted">{escape(sub)}</text>'
             "</g>"
+            for i, (title, sub) in enumerate(items)
         )
 
-    chips, y, x0, x1, n = "", 62, mid + 24, W - PAD, 0
+    body = f"""
+{header("About")}
+{rows(ABOUT, PAD, 0)}
+<line x1="{mid}" y1="32" x2="{mid}" y2="{h - 32}" stroke="{c["grid"]}"/>
+{header("Education", x=mid + 24)}
+{rows(EDUCATION, mid + 24, 0.1)}
+"""
+    label = "About: " + "; ".join(f"{t} ({s})" for t, s in ABOUT + EDUCATION)
+    return svg(h, label, body, c)
+
+
+def render_stack(c: dict) -> str:
+    x0, x1 = PAD + 112, W - PAD
+    chips, y, n = "", 66, 0
     for group, items in STACK:
-        y += 22
-        chips += f'<text x="{x0}" y="{y}" class="muted small caps">{group}</text>'
-        x, y = x0, y + 12
-        for name, color in items:
-            w = len(name) * 7.4 + 42
+        chips += f'<text x="{PAD}" y="{y + 19}" class="muted small caps">{group}</text>'
+        x = x0
+        for name, color, *note in items:
+            note = note[0] if note else ""
+            w = len(name) * 7.4 + (len(note) * 6.6 + 8 if note else 0) + 42
             if x + w > x1:
                 x, y = x0, y + 40
+            note_el = f'<tspan class="muted" dx="6">{escape(note)}</tspan>' if note else ""
             chips += (
-                f'<g class="fade" style="animation-delay:{0.15 + n * 0.06:.2f}s">'
+                f'<g class="fade" style="animation-delay:{n * 0.05:.2f}s">'
                 f'<rect x="{x:.1f}" y="{y}" width="{w:.1f}" height="30" rx="15" fill="{c["tile"]}" stroke="{c["grid"]}"/>'
                 f'<circle cx="{x + 17:.1f}" cy="{y + 15}" r="4.5" fill="{color or c["fg"]}"/>'
-                f'<text x="{x + 29:.1f}" y="{y + 19.5}" style="font-size:13px">{name}</text>'
+                f'<text x="{x + 29:.1f}" y="{y + 19.5}" style="font-size:13px">{escape(name)}{note_el}</text>'
                 "</g>"
             )
             x += w + 8
             n += 1
-        y += 50
+        y += 44
+    h = y + 18
 
     body = f"""
-{header("About")}
-{rows}
-<line x1="{mid}" y1="32" x2="{mid}" y2="{h - 32}" stroke="{c["grid"]}"/>
-{header("Stack", x=mid + 24)}
+{header("Stack")}
 {chips}
 """
     css = ".caps { text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }"
-    label = "About: " + "; ".join(f"{t} ({s})" for t, s in ABOUT) + ". Stack: " + ", ".join(
-        n for _, items in STACK for n, _ in items
+    label = "Stack: " + "; ".join(
+        f"{g}: " + ", ".join(f"{i[0]} ({i[2]})" if len(i) > 2 else i[0] for i in items) for g, items in STACK
     )
     return svg(h, label, body, c, css)
 
@@ -431,15 +448,19 @@ LINKS = [
 ]
 
 
+GAP = 6  # ≈ the line gap (5–6px) GitHub leaves between stacked images
+
+
 def render_link(title: str, sub: str, c: dict) -> str:
-    w, h = 196, 56
+    """One quarter of the README width; the gap is baked in as side insets."""
+    w, h, g = W // 4, 56, GAP / 2
     body = (
-        f'<text x="18" y="25" style="font-size:14px;font-weight:600">{escape(title)}</text>'
-        f'<text x="18" y="42" class="muted small">{escape(sub)}</text>'
-        f'<path d="M{w - 27} 27 {w - 19} 19M{w - 25} 19h6v6" fill="none" stroke="url(#accent)" '
+        f'<text x="{g + 18}" y="25" style="font-size:14px;font-weight:600">{escape(title)}</text>'
+        f'<text x="{g + 18}" y="42" class="muted small">{escape(sub)}</text>'
+        f'<path d="M{w - g - 27} 27 {w - g - 19} 19M{w - g - 25} 19h6v6" fill="none" stroke="url(#accent)" '
         'stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>'
     )
-    return svg(h, f"{title} — {sub}", body, c, width=w)
+    return svg(h, f"{title} — {sub}", body, c, width=w, inset=g)
 
 
 # ================================================================ main
@@ -457,9 +478,10 @@ def main() -> None:
         for slug, title, sub in LINKS:
             (out / f"link-{slug}-{name}.svg").write_text(render_link(title, sub, c), encoding="utf-8")
         (out / f"about-{name}.svg").write_text(render_about(c), encoding="utf-8")
+        (out / f"stack-{name}.svg").write_text(render_stack(c), encoding="utf-8")
         (out / f"activity-{name}.svg").write_text(render_activity(days, today, c), encoding="utf-8")
         (out / f"languages-{name}.svg").write_text(render_languages(langs, c), encoding="utf-8")
-    print(f"Wrote hero / links / about / activity / languages cards to {out}")
+    print(f"Wrote hero / links / about / stack / activity / languages cards to {out}")
 
 
 if __name__ == "__main__":
