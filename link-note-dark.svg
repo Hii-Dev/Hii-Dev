@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="210" height="56" viewBox="0 0 210 56" role="img" aria-label="note — note.com/h1idev">
+<title>note — note.com/h1idev</title>
+<defs>
+  <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0" stop-color="#818cf8"/><stop offset="1" stop-color="#e879f9"/>
+  </linearGradient>
+</defs>
+<style>
+  text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif; fill: #f0f6fc; }
+  .heading { font-size: 14px; font-weight: 600; }
+  .muted { font-size: 12px; fill: #9198a1; }
+  .small { font-size: 11px; }
+  .fade { animation: fade .8s ease-out both; }
+  @keyframes fade { from { opacity: 0; transform: translateY(4px); } }
+  
+  @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }
+</style>
+<rect x="3.5" y="0.5" width="203.0" height="55" rx="14" fill="#0d1117" stroke="#3d444d"/>
+<text x="21.0" y="25" style="font-size:14px;font-weight:600">note</text><text x="21.0" y="42" class="muted small">note.com/h1idev</text><path d="M180.0 27 188.0 19M182.0 19h6v6" fill="none" stroke="url(#accent)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="840" height="238" viewBox="0 0 840 238" role="img" aria-label="About: Programmer (Based in Chiba, Japan); Building web apps (React · FastAPI); Beer &amp; books (Off the keyboard); Kawahara Computer Business College (Graduated 2026); Sanno University (Graduated 2026)">
+<title>About: Programmer (Based in Chiba, Japan); Building web apps (React · FastAPI); Beer &amp; books (Off the keyboard); Kawahara Computer Business College (Graduated 2026); Sanno University (Graduated 2026)</title>
+<defs>
+  <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0" stop-color="#818cf8"/><stop offset="1" stop-color="#e879f9"/>
+  </linearGradient>
+</defs>
+<style>
+  text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif; fill: #f0f6fc; }
+  .heading { font-size: 14px; font-weight: 600; }
+  .muted { font-size: 12px; fill: #9198a1; }
+  .small { font-size: 11px; }
+  .fade { animation: fade .8s ease-out both; }
+  @keyframes fade { from { opacity: 0; transform: translateY(4px); } }
+  
+  @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }
+</style>
+<rect x="0.5" y="0.5" width="839" height="237" rx="14" fill="#0d1117" stroke="#3d444d"/>
+
+<rect x="32" y="31" width="4" height="16" rx="2" fill="url(#accent)"/><text x="44" y="44" class="heading">About</text>
+<g class="fade" style="animation-delay:0.00s"><text x="32" y="86" style="font-size:14px;font-weight:500">Programmer</text><text x="32" y="104" class="muted">Based in Chiba, Japan</text></g><g class="fade" style="animation-delay:0.08s"><text x="32" y="136" style="font-size:14px;font-weight:500">Building web apps</text><text x="32" y="154" class="muted">React · FastAPI</text></g><g class="fade" style="animation-delay:0.16s"><text x="32" y="186" style="font-size:14px;font-weight:500">Beer &amp; books</text><text x="32" y="204" class="muted">Off the keyboard</text></g>
+<line x1="432" y1="32" x2="432" y2="206" stroke="#212830"/>
+<rect x="456" y="31" width="4" height="16" rx="2" fill="url(#accent)"/><text x="468" y="44" class="heading">Education</text>
+<g class="fade" style="animation-delay:0.10s"><text x="456" y="86" style="font-size:14px;font-weight:500">Kawahara Computer Business College</text><text x="456" y="104" class="muted">Graduated 2026</text></g><g class="fade" style="animation-delay:0.18s"><text x="456" y="136" style="font-size:14px;font-weight:500">Sanno University</text><text x="456" y="154" class="muted">Graduated 2026</text></g>
+
+</svg>

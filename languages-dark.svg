@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="840" height="164" viewBox="0 0 840 164" role="img" aria-label="Top languages: TypeScript 84%, Python 5%, JavaScript 3%, HTML 3%, CSS 3%, Jupyter Notebook 2%, Other 0%">
+<title>Top languages: TypeScript 84%, Python 5%, JavaScript 3%, HTML 3%, CSS 3%, Jupyter Notebook 2%, Other 0%</title>
+<defs>
+  <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0" stop-color="#818cf8"/><stop offset="1" stop-color="#e879f9"/>
+  </linearGradient>
+</defs>
+<style>
+  text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif; fill: #f0f6fc; }
+  .heading { font-size: 14px; font-weight: 600; }
+  .muted { font-size: 12px; fill: #9198a1; }
+  .small { font-size: 11px; }
+  .fade { animation: fade .8s ease-out both; }
+  @keyframes fade { from { opacity: 0; transform: translateY(4px); } }
+  
+  .grow { transform-origin: left; animation: grow 1s .1s cubic-bezier(.2,.8,.2,1) both; }
+  @keyframes grow { from { transform: scaleX(0); } }
+  @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }
+</style>
+<rect x="0.5" y="0.5" width="839" height="163" rx="14" fill="#0d1117" stroke="#3d444d"/>
+
+<defs><clipPath id="bar"><rect x="32" y="66" width="776" height="10" rx="5"/></clipPath></defs>
+<rect x="32" y="31" width="4" height="16" rx="2" fill="url(#accent)"/><text x="44" y="44" class="heading">Languages</text><text x="808" y="44" class="muted small" text-anchor="end">by code size</text>
+<g clip-path="url(#bar)" class="grow"><rect x="32.0" y="66" width="651.3" height="10" fill="#3178c6"/><rect x="685.3" y="66" width="37.6" height="10" fill="#3572A5"/><rect x="724.9" y="66" width="20.5" height="10" fill="#f1e05a"/><rect x="747.4" y="66" width="19.2" height="10" fill="#e34c26"/><rect x="768.6" y="66" width="19.2" height="10" fill="#663399"/><rect x="789.8" y="66" width="12.5" height="10" fill="#DA5B0B"/><rect x="804.4" y="66" width="1.6" height="10" fill="#3d444d"/></g>
+<g class="fade" style="animation-delay:0.30s"><circle cx="37.0" cy="108" r="5" fill="#3178c6"/><text x="50.0" y="112" style="font-size:13px">TypeScript<tspan class="muted" dx="6">84.2%</tspan></text></g><g class="fade" style="animation-delay:0.35s"><circle cx="231.0" cy="108" r="5" fill="#3572A5"/><text x="244.0" y="112" style="font-size:13px">Python<tspan class="muted" dx="6">5.1%</tspan></text></g><g class="fade" style="animation-delay:0.40s"><circle cx="425.0" cy="108" r="5" fill="#f1e05a"/><text x="438.0" y="112" style="font-size:13px">JavaScript<tspan class="muted" dx="6">2.9%</tspan></text></g><g class="fade" style="animation-delay:0.45s"><circle cx="619.0" cy="108" r="5" fill="#e34c26"/><text x="632.0" y="112" style="font-size:13px">HTML<tspan class="muted" dx="6">2.7%</tspan></text></g><g class="fade" style="animation-delay:0.50s"><circle cx="37.0" cy="132" r="5" fill="#663399"/><text x="50.0" y="136" style="font-size:13px">CSS<tspan class="muted" dx="6">2.7%</tspan></text></g><g class="fade" style="animation-delay:0.55s"><circle cx="231.0" cy="132" r="5" fill="#DA5B0B"/><text x="244.0" y="136" style="font-size:13px">Jupyter Notebook<tspan class="muted" dx="6">1.9%</tspan></text></g><g class="fade" style="animation-delay:0.60s"><circle cx="425.0" cy="132" r="5" fill="#3d444d"/><text x="438.0" y="136" style="font-size:13px">Other<tspan class="muted" dx="6">0.5%</tspan></text></g>
+
+</svg>
